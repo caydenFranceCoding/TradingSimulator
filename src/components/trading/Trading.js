@@ -2,6 +2,8 @@ import react, { useState, useContext, useEffect } from "react";
 import { MarketContext } from "../../context/MarketContext";
 import { PortfolioContext } from "../../context/PortfolioContext";
 import './Trading.css';
+import PriceChart from '../charts/PriceChart';
+
 
 const Trading = () => {
     const { assets, selectedAsset, setSelectedAsset } = useContext(MarketContext);
@@ -118,6 +120,7 @@ const Trading = () => {
                     ({((asset.price - asset.previousPrice) / asset.previousPrice * 100).toFixed(2)}%)
                   </span>
                 </div>
+                  <PriceChart symbol={selectedAsset} />
                 <p className="asset-description">{asset.description}</p>
               </div>
 

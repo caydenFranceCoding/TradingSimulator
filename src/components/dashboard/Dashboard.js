@@ -1,6 +1,9 @@
+// src/components/dashboard/Dashboard.js
 import React, { useContext } from 'react';
 import { MarketContext } from '../../context/MarketContext';
 import { PortfolioContext } from '../../context/PortfolioContext';
+import NewsFeed from '../news/NewsFeed';
+import MarketOverview from './MarketOverview';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -17,63 +20,33 @@ const Dashboard = () => {
       </div>
 
       <div className="dashboard-grid">
-        <div className="dashboard-card portfolio-summary">
-          <h3>Portfolio Summary</h3>
-          <div className="portfolio-values">
-            <div className="value-card cash">
-              <div className="value-label">Cash</div>
-              <div className="value-amount">${cash.toFixed(2)}</div>
-            </div>
-            <div className="value-card holdings">
-              <div className="value-label">Holdings Value</div>
-              <div className="value-amount">${holdingsValue.toFixed(2)}</div>
-            </div>
-            <div className="value-card total">
-              <div className="value-label">Total Value</div>
-              <div className="value-amount">${totalValue.toFixed(2)}</div>
+        <div className="dashboard-column">
+          <div className="dashboard-card portfolio-summary">
+            <h3>Portfolio Summary</h3>
+            <div className="portfolio-values">
+              <div className="value-card cash">
+                <div className="value-label">Cash</div>
+                <div className="value-amount">${cash.toFixed(2)}</div>
+              </div>
+              <div className="value-card holdings">
+                <div className="value-label">Holdings Value</div>
+                <div className="value-amount">${holdingsValue.toFixed(2)}</div>
+              </div>
+              <div className="value-card total">
+                <div className="value-label">Total Value</div>
+                <div className="value-amount">${totalValue.toFixed(2)}</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="dashboard-card">
-          <h3>Market Snapshot</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Symbol</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Change</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(assets).slice(0, 5).map(symbol => {
-                const asset = assets[symbol];
-                const priceChange = asset.price - asset.previousPrice;
-                const priceChangePercent = (priceChange / asset.previousPrice) * 100;
-
-                return (
-                  <tr key={symbol}>
-                    <td><strong>{symbol}</strong></td>
-                    <td>{asset.name}</td>
-                    <td>${asset.price.toFixed(2)}</td>
-                    <td className={priceChange >= 0 ? 'positive' : 'negative'}>
-                      {priceChange >= 0 ? '+' : ''}
-                      ${priceChange.toFixed(2)} ({priceChangePercent.toFixed(2)}%)
-                    </td>
-                    <td>
-                      <button className="btn btn-primary">Trade</button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <div className="market-actions">
-            <button className="btn btn-secondary">View All Markets</button>
-          </div>
+        <div className="dashboard-column">
+          <MarketOverview />
         </div>
+      </div>
+
+      <div className="dashboard-wide">
+        <NewsFeed />
       </div>
 
       <div className="dashboard-card">
