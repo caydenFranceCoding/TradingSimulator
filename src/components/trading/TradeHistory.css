@@ -1,0 +1,177 @@
+.trade-history {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+.history-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.history-controls {
+  display: flex;
+  gap: 15px;
+}
+
+.filter-control, .sort-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-control label, .sort-control label {
+  font-size: 14px;
+  color: #666;
+}
+
+.filter-control select, .sort-control select {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  font-size: 14px;
+  color: #333;
+}
+
+.history-table-container {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th {
+  padding: 12px 15px;
+  text-align: left;
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 0;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 2px solid #eee;
+}
+
+.history-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.history-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.history-table .buy-order {
+  border-left: 3px solid #2ecc71;
+}
+
+.history-table .sell-order {
+  border-left: 3px solid #e74c3c;
+}
+
+.symbol-cell {
+  font-weight: 600;
+  color: #333;
+}
+
+.type-cell {
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 4px 8px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.type-cell.buy {
+  background-color: rgba(46, 204, 113, 0.15);
+  color: #27ae60;
+}
+
+.type-cell.sell {
+  background-color: rgba(231, 76, 60, 0.15);
+  color: #c0392b;
+}
+
+.no-transactions {
+  text-align: center;
+  padding: 40px 0;
+  color: #888;
+  font-style: italic;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+}
+
+.history-summary {
+  display: flex;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 15px;
+  justify-content: space-between;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.summary-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .history-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .filter-control, .sort-control {
+    width: 100%;
+  }
+
+  .filter-control select, .sort-control select {
+    flex: 1;
+  }
+
+  .history-table {
+    font-size: 14px;
+  }
+
+  .history-table th, .history-table td {
+    padding: 10px 8px;
+  }
+
+  .history-summary {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

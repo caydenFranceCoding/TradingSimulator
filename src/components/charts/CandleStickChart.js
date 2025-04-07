@@ -1,109 +1,216 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { MarketContext } from '../../context/MarketContext';
-import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, ReferenceLine
-} from 'recharts';
+import { Line, Bar, Scatter, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import './ChartStyles.css';
 
-const CandleStickChart = ({ symbol }) => {
-  const { assets, getChartData, timeframe } = useContext(MarketContext);
+const CandleStickChart = ({ symbol, timeframe }) => {
+  const { assets, getChartData } = useContext(MarketContext);
   const [chartData, setChartData] = useState([]);
-
+  const [indicators, setIndicators] = useState({
+    sma: true,
+    volume: true,
+    ema: false,
+    rsi: false
+  });
 
   useEffect(() => {
-    const asset = assets[symbol];
-    if (asset && asset.history && asset.history.length > 0) {
-      // Transform price history into simulated OHLC data
-      const simulatedData = asset.history.map((dataPoint, index) => {
-        // I shall now create some randomness in the high/low/open values
-        const volatility = asset.volatility || 2;
-        const randomFactor = Math.random() * volatility / 100;
+    if (symbol) {
+      const data = getChartData(symbol, timeframe);
+
+      // Transform data for candlestick representation
+      const transformedData = data.map((item, index, array) => {
+        // Calculate OHLC data
+        const open = index > 0 ? array[index - 1].price : item.price;
+        const high = item.price * (1 + Math.random() * 0.01); // Simulate high
+        const low = item.price * (1 - Math.random() * 0.01);  // Simulate low
+        const close = item.price;
+
+        // Calculate simple moving average (5-day)
+        let sma5 = null;
+        if (index >= 4) {
+          sma5 = array.slice(index - 4, index + 1).reduce((sum, i) => sum + i.price, 0) / 5;
+        }
+
+        // Calculate volume (simulated)
+        const volume = Math.floor(Math.random() * 10000) + 5000;
 
         return {
-          day: dataPoint.day,
-          open: index > 0 ? asset.history[index - 1].price : dataPoint.price * (1 - randomFactor),
-          high: dataPoint.price * (1 + randomFactor),
-          low: dataPoint.price * (1 - randomFactor),
-          close: dataPoint.price,
+          day: item.day,
+          open,
+          high,
+          low,
+          close,
+          sma5,
+          volume,
+          // Format for candlestick visualization
+          highLowLine: [low, high],
+          openCloseLine: [open, close],
+          fillColor: close >= open ? '#26a69a' : '#ef5350'
         };
       });
 
-      setChartData(simulatedData);
+      setChartData(transformedData);
     }
-  }, [assets, symbol, timeframe]);
+  }, [symbol, timeframe, getChartData]);
 
-  if (chartData.length === 0) {
-    return <div>Loading chart data...</div>;
-  }
-
-  // Calculate min and max values for Y-axis domain
-  const allValues = chartData.flatMap(item => [item.high, item.low, item.open, item.close]);
-  const minValue = Math.min(...allValues) * 0.995;
-  const maxValue = Math.max(...allValues) * 1.005;
-
-  // Custom tooltip to display OHLC data
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="candlestick-tooltip" style={{
-          backgroundColor: '#fff',
-          padding: '10px',
-          border: '1px solid #ccc',
-          borderRadius: '5px'
-        }}>
-          <p><strong>Day {label}</strong></p>
-          <p>Open: ${data.open.toFixed(2)}</p>
-          <p>High: ${data.high.toFixed(2)}</p>
-          <p>Low: ${data.low.toFixed(2)}</p>
-          <p>Close: ${data.close.toFixed(2)}</p>
-        </div>
-      );
-    }
-    return null;
+  const toggleIndicator = (indicator) => {
+    setIndicators(prev => ({
+      ...prev,
+      [indicator]: !prev[indicator]
+    }));
   };
 
+  const formatYAxis = (value) => {
+    return `$${value.toFixed(2)}`;
+  };
+
+  if (chartData.length === 0) {
+    return <div className="loading-chart">Loading chart data...</div>;
+  }
+
   return (
-    <div style={{ width: '100%', height: 300 }}>
-      <ResponsiveContainer>
-        <AreaChart
-          data={chartData}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="day" />
-          <YAxis
-            domain={[minValue, maxValue]}
-            tickFormatter={(value) => `$${value.toFixed(2)}`}
-          />
-          <Tooltip content={<CustomTooltip />} />
+    <div className="chart-container">
+      <div className="chart-header">
+        <h3>{symbol} Chart</h3>
+        <div className="chart-indicators">
+          <button
+            className={`indicator-btn ${indicators.sma ? 'active' : ''}`}
+            onClick={() => toggleIndicator('sma')}
+          >
+            SMA
+          </button>
+          <button
+            className={`indicator-btn ${indicators.volume ? 'active' : ''}`}
+            onClick={() => toggleIndicator('volume')}
+          >
+            Volume
+          </button>
+          <button
+            className={`indicator-btn ${indicators.ema ? 'active' : ''}`}
+            onClick={() => toggleIndicator('ema')}
+          >
+            EMA
+          </button>
+          <button
+            className={`indicator-btn ${indicators.rsi ? 'active' : ''}`}
+            onClick={() => toggleIndicator('rsi')}
+          >
+            RSI
+          </button>
+        </div>
+      </div>
 
-          {/* Draw the price area */}
-          <defs>
-            <linearGradient id="colorClose" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="#8884d8" stopOpacity={0.2}/>
-            </linearGradient>
-          </defs>
-
-          <Area
-            type="monotone"
-            dataKey="close"
-            stroke="#8884d8"
-            fillOpacity={1}
-            fill="url(#colorClose)"
-          />
-
-          {/* Add a reference line for the last closing price */}
-          {chartData.length > 0 && (
-            <ReferenceLine
-              y={chartData[chartData.length - 1].close}
-              stroke="red"
-              strokeDasharray="3 3"
+      <div className="chart-content">
+        <ResponsiveContainer width="100%" height={400}>
+          <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="day" label={{ value: 'Day', position: 'insideBottomRight', offset: 0 }} />
+            <YAxis
+              yAxisId="price"
+              domain={['auto', 'auto']}
+              tickFormatter={formatYAxis}
+              label={{ value: 'Price ($)', angle: -90, position: 'insideLeft' }}
             />
-          )}
-        </AreaChart>
-      </ResponsiveContainer>
+            {indicators.volume && (
+              <YAxis
+                yAxisId="volume"
+                orientation="right"
+                domain={['auto', 'auto']}
+                tickFormatter={(value) => `${value/1000}K`}
+                label={{ value: 'Volume', angle: 90, position: 'insideRight' }}
+              />
+            )}
+            <Tooltip
+              content={({ active, payload }) => {
+                if (active && payload && payload.length) {
+                  return (
+                    <div className="custom-tooltip">
+                      <p className="tooltip-label">{`Day: ${payload[0].payload.day}`}</p>
+                      <p className="tooltip-data">{`Open: $${payload[0].payload.open.toFixed(2)}`}</p>
+                      <p className="tooltip-data">{`High: $${payload[0].payload.high.toFixed(2)}`}</p>
+                      <p className="tooltip-data">{`Low: $${payload[0].payload.low.toFixed(2)}`}</p>
+                      <p className="tooltip-data">{`Close: $${payload[0].payload.close.toFixed(2)}`}</p>
+                      {payload[0].payload.sma5 && (
+                        <p className="tooltip-data">{`SMA5: $${payload[0].payload.sma5.toFixed(2)}`}</p>
+                      )}
+                      <p className="tooltip-data">{`Volume: ${payload[0].payload.volume.toLocaleString()}`}</p>
+                    </div>
+                  );
+                }
+                return null;
+              }}
+            />
+            <Legend />
+
+            {/* Candlestick high-low line */}
+            <Scatter
+              yAxisId="price"
+              dataKey="highLowLine"
+              fill="none"
+              line={{ stroke: '#8884d8' }}
+              shape={({ cx, cy }) => {
+                return (
+                  <line
+                    x1={cx}
+                    y1={cy[0]}
+                    x2={cx}
+                    y2={cy[1]}
+                    stroke="#8884d8"
+                    strokeWidth={1}
+                  />
+                )
+              }}
+              legendType="none"
+            />
+
+            {/* Candlestick open-close box */}
+            <Scatter
+              yAxisId="price"
+              dataKey="openCloseLine"
+              fill="none"
+              shape={({ cx, cy, payload }) => {
+                const width = 8;
+                const height = Math.abs(cy[1] - cy[0]);
+                const x = cx - width / 2;
+                const y = Math.min(cy[0], cy[1]);
+
+                return (
+                  <rect
+                    x={x}
+                    y={y}
+                    width={width}
+                    height={height || 1} // Ensure at least 1px height
+                    fill={payload.fillColor}
+                  />
+                )
+              }}
+              name="Price"
+            />
+
+            {/* SMA line */}
+            {indicators.sma && (
+              <Line
+                yAxisId="price"
+                type="monotone"
+                dataKey="sma5"
+                stroke="#ff7300"
+                dot={false}
+                name="SMA (5)"
+              />
+            )}
+
+            {/* Volume bars */}
+            {indicators.volume && (
+              <Bar
+                yAxisId="volume"
+                dataKey="volume"
+                fill="rgba(75, 192, 192, 0.5)"
+                name="Volume"
+              />
+            )}
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

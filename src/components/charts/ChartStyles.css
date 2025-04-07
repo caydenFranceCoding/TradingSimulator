@@ -1,0 +1,111 @@
+.chart-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.chart-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.chart-indicators {
+  display: flex;
+  gap: 8px;
+}
+
+.indicator-btn {
+  background-color: #f0f2f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.indicator-btn:hover {
+  background-color: #e6e6e6;
+}
+
+.indicator-btn.active {
+  background-color: #1a2332;
+  color: white;
+  border-color: #1a2332;
+}
+
+.chart-content {
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.custom-tooltip {
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip-label {
+  font-weight: bold;
+  margin: 0 0 5px 0;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 3px;
+}
+
+.tooltip-data {
+  margin: 2px 0;
+  color: #666;
+  font-size: 12px;
+}
+
+.loading-chart {
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  color: #666;
+}
+
+.timeframe-selector {
+  display: flex;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #f0f2f5;
+  max-width: fit-content;
+}
+
+.timeframe-btn {
+  border: none;
+  background-color: transparent;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.timeframe-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.timeframe-btn.active {
+  background-color: #1a2332;
+  color: white;
+}

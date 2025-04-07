@@ -1,0 +1,152 @@
+.market-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.overview-section {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.section-title {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+/* Indices Styling */
+.indices-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.index-card {
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 15px;
+  transition: transform 0.2s ease;
+}
+
+.index-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.index-name {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.index-price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.index-change {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Market Sentiment Styling */
+.sentiment-container {
+  padding: 10px;
+}
+
+.sentiment-gauge {
+  position: relative;
+  height: 15px;
+  background: linear-gradient(to right, #e74c3c, #f39c12, #2ecc71);
+  border-radius: 10px;
+  margin-bottom: 15px;
+  margin-top: 20px;
+}
+
+.sentiment-indicator {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #f39c12;
+  top: -10px;
+  transform: translateX(-50%);
+  border: 3px solid white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.sentiment-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  padding: 0 10px;
+  color: #666;
+  font-size: 12px;
+}
+
+.sentiment-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+/* Gainers and Losers Styling */
+.gainers-losers {
+  display: flex;
+  gap: 20px;
+  padding: 15px;
+}
+
+.movers-section {
+  flex: 1;
+}
+
+.movers-list {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.mover-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.mover-item:last-child {
+  border-bottom: none;
+}
+
+.mover-item:hover {
+  background-color: #f5f5f5;
+}
+
+.mover-symbol {
+  font-weight: 600;
+  color: #333;
+}
+
+.mover-change {
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .indices-container {
+    grid-template-columns: 1fr;
+  }
+
+  .gainers-losers {
+    flex-direction: column;
+  }
+}

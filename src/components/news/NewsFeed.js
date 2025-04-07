@@ -1,114 +1,120 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { MarketContext } from '../../context/MarketContext';
 import NewsItem from './NewsItem';
-import { getMarketNews, getStockNews } from '../../services/newsService';
+import './NewsStyles.css';
 
-const NewsFeed = ({ filterSymbol = null }) => {
-    const [news, setNews] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+const NewsFeed = ({ symbol }) => {
+  const { day, assets } = useContext(MarketContext);
+  const [news, setNews] = useState([]);
+  const [filter, setFilter] = useState('all'); // 'all', 'market', 'symbol'
 
-    useEffect(() => {
-        const fetchNews = async () => {
-            setLoading(true);
-            setError(null);
-
-             try {
-        let newsData;
-
-        if (filterSymbol) {
-          // Get news specific to this stock
-          newsData = await getStockNews(filterSymbol);
-        } else {
-          // Get general market news
-          newsData = await getMarketNews();
-        }
-
-        setNews(newsData);
-      } catch (err) {
-        console.error('Error fetching news:', err);
-        setError('Failed to load news. Please try again later.');
-        setNews([]);
-      } finally {
-        setLoading(false);
+  // Generate mock news data based on the current market day and selected symbol
+  useEffect(() => {
+    // General market news
+    const marketNews = [
+      {
+        id: `market-${day}-1`,
+        title: `Market Update: Major Indices ${Math.random() > 0.5 ? 'Rise' : 'Fall'} as Investors React to Latest Economic Data`,
+        date: `Day ${day}`,
+        source: 'Market Watch',
+        summary: 'Investors are processing the latest economic indicators and adjusting their portfolios accordingly.',
+        type: 'market'
+      },
+      {
+        id: `market-${day}-2`,
+        title: `Fed Chair Comments on Interest Rate Outlook`,
+        date: `Day ${day}`,
+        source: 'Financial Times',
+        summary: 'The Federal Reserve chair provided insights on the future direction of monetary policy.',
+        type: 'market'
+      },
+      {
+        id: `market-${day}-3`,
+        title: `Global Markets: International Trade Tensions Impact Stocks`,
+        date: `Day ${day}`,
+        source: 'Global Finance',
+        summary: 'Ongoing diplomatic negotiations are affecting investor sentiment across global markets.',
+        type: 'market'
       }
-    };
+    ];
 
-    fetchNews();
-  }, [filterSymbol]);
+    // Symbol-specific news (if a symbol is selected)
+    let symbolNews = [];
+    if (symbol && assets[symbol]) {
+      const asset = assets[symbol];
+      const priceChange = asset.price - asset.previousPrice;
+      const direction = priceChange >= 0 ? 'up' : 'down';
+      const percent = Math.abs((priceChange / asset.previousPrice) * 100).toFixed(2);
 
-  if (loading) {
-    return (
-      <div className="news-feed news-feed-loading">
-        <p>Loading news{filterSymbol ? ` for ${filterSymbol}` : ''}...</p>
-      </div>
-    );
-  }
+      symbolNews = [
+        {
+          id: `${symbol}-${day}-1`,
+          title: `${asset.name} (${symbol}) ${direction === 'up' ? 'Climbs' : 'Drops'} ${percent}% in Active Trading`,
+          date: `Day ${day}`,
+          source: 'Stock Insights',
+          summary: `${asset.name} shares ${direction === 'up' ? 'rose' : 'fell'} significantly today amid ${Math.random() > 0.5 ? 'high' : 'moderate'} trading volume.`,
+          type: 'symbol',
+          symbol: symbol
+        },
+        {
+          id: `${symbol}-${day}-2`,
+          title: `Analyst Updates Price Target for ${symbol}`,
+          date: `Day ${day}`,
+          source: 'Equity Research',
+          summary: `Several analysts have adjusted their outlook for ${asset.name} based on recent company developments.`,
+          type: 'symbol',
+          symbol: symbol
+        }
+      ];
+    }
 
-  if (error) {
-    return (
-      <div className="news-feed news-feed-error">
-        <p>{error}</p>
-      </div>
-    );
-  }
+    const combinedNews = [...marketNews, ...symbolNews];
+    setNews(combinedNews);
+  }, [day, symbol, assets]);
 
-  if (news.length === 0) {
-    return (
-      <div className="news-feed news-feed-empty">
-        <p>No recent news available{filterSymbol ? ` for ${filterSymbol}` : ''}.</p>
-      </div>
-    );
-  }
+  const filteredNews = news.filter(item => {
+    if (filter === 'all') return true;
+    if (filter === 'market') return item.type === 'market';
+    if (filter === 'symbol') return item.type === 'symbol' && item.symbol === symbol;
+    return true;
+  });
 
   return (
     <div className="news-feed">
-      <h3 className="news-feed-title">
-        {filterSymbol ? `News for ${filterSymbol}` : 'Market News'}
-      </h3>
-      <div className="news-feed-items">
-        {news.map(item => (
-          <NewsItem key={item.id} news={item} />
-        ))}
+      <div className="news-header">
+        <h3>Market News</h3>
+        <div className="news-filters">
+          <button
+            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+            onClick={() => setFilter('all')}
+          >
+            All News
+          </button>
+          <button
+            className={`filter-btn ${filter === 'market' ? 'active' : ''}`}
+            onClick={() => setFilter('market')}
+          >
+            Market
+          </button>
+          {symbol && (
+            <button
+              className={`filter-btn ${filter === 'symbol' ? 'active' : ''}`}
+              onClick={() => setFilter('symbol')}
+            >
+              {symbol}
+            </button>
+          )}
+        </div>
       </div>
-      <style jsx>{`
-        .news-feed {
-          background-color: white;
-          border-radius: 8px;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          padding: 20px;
-          margin-bottom: 20px;
-        }
-        
-        .news-feed-title {
-          margin-top: 0;
-          font-size: 18px;
-          color: #333;
-          border-bottom: 1px solid #eee;
-          padding-bottom: 10px;
-          margin-bottom: 15px;
-        }
-        
-        .news-feed-items {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-          max-height: 400px;
-          overflow-y: auto;
-        }
-        
-        .news-feed-empty, .news-feed-loading, .news-feed-error {
-          background-color: white;
-          border-radius: 8px;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          padding: 20px;
-          text-align: center;
-          color: #666;
-        }
-        
-        .news-feed-error {
-          color: #e74c3c;
-        }
-      `}</style>
+      <div className="news-list">
+        {filteredNews.length > 0 ? (
+          filteredNews.map(item => (
+            <NewsItem key={item.id} news={item} />
+          ))
+        ) : (
+          <div className="no-news">No news available for the selected filter.</div>
+        )}
+      </div>
     </div>
   );
 };
