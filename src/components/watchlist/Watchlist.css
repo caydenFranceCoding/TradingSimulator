@@ -1,0 +1,222 @@
+/* src/components/watchlist/Watchlist.css */
+.watchlist-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.watchlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.watchlist-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.add-symbol-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-symbol-btn:hover {
+  background-color: #2980b9;
+}
+
+.symbol-search {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.symbol-search input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.cancel-search-btn {
+  background-color: #f0f2f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.symbol-suggestions {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: #f5f5f5;
+}
+
+.suggestion-symbol {
+  font-weight: bold;
+  color: #333;
+}
+
+.suggestion-name {
+  color: #666;
+  font-size: 0.9em;
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.watchlist-table-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.watchlist-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.watchlist-table th {
+  padding: 10px;
+  text-align: left;
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.watchlist-item {
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.watchlist-item:hover {
+  background-color: #f5f5f5;
+}
+
+.watchlist-item td {
+  padding: 12px 10px;
+}
+
+.symbol-cell {
+  font-weight: 600;
+  color: #333;
+}
+
+.asset-name {
+  font-size: 12px;
+  color: #666;
+  font-weight: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.price-cell {
+  font-weight: 500;
+}
+
+.change-cell {
+  font-weight: 500;
+}
+
+.positive {
+  color: #2ecc71;
+}
+
+.negative {
+  color: #e74c3c;
+}
+
+.action-cell {
+  width: 40px;
+  text-align: center;
+}
+
+.remove-btn {
+  background-color: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.remove-btn:hover {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+}
+
+.empty-watchlist {
+  padding: 30px;
+  text-align: center;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  color: #666;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .watchlist-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .symbol-search {
+    max-width: 100%;
+  }
+
+  .asset-name {
+    max-width: 80px;
+  }
+}
